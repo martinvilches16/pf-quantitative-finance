@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np 
 import yfinance as yf 
 
+
 # descargar precios desde yahoo finance
 tickers = ['IVV', 'ILF', 'SOXX'] #SP500, LATAM, SEMICONDUCTORES
 df_princes = yf.download(tickers,start='2024-01-01',end = '2026-09-30')['Close']
@@ -33,3 +34,15 @@ print(varianza)
 desv = varianza **(1/2)
 volatilidad_anual = desv * (252**(1/2)) #anualizar volatilidad anual
 print(f'La volatilidad anual del portafolio es: {volatilidad_anual*100:.04}%')
+
+# calcular la media del portafolio
+vector_ret = df_ret.mean()
+vector_ret = vector_ret.values 
+vector_ret = vector_ret.reshape(-1,1)
+mu = np.dot(w_t, vector_ret)[0][0]
+mu_anual = mu*252                   
+print(f'la media anual del portafolio es: {mu_anual*100:.04}%')
+
+#calcular value at risk (var) al 95% de confianza
+var_95 = mu_anual - 1.64*volatilidad_anual
+print(f'la var anual del portafolio es: {var_95*100:.04}%')
